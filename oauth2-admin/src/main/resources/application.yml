@@ -1,0 +1,22 @@
+server:
+  port: 8881
+
+spring:
+  application:
+    name: oauth-admin
+  profiles:
+    active: dev
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+logging:
+  level:
+    java.sql.PreparedStatement: debug
+  path: logs/
+  file:
+    max-size: 1GB
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
