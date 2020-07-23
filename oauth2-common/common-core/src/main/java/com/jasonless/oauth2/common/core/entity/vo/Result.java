@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.jasonless.oauth2.common.core.exception.BaseException;
 import com.jasonless.oauth2.common.core.exception.IErrorType;
 import com.jasonless.oauth2.common.core.exception.SystemErrorType;
+import lombok.Data;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
@@ -12,6 +13,7 @@ import java.time.ZonedDateTime;
 /**
  * @author LiuShiZeng
  */
+@Data
 public class Result<T> {
 
     public static final String SUCCESSFUL_CODE = "000000";

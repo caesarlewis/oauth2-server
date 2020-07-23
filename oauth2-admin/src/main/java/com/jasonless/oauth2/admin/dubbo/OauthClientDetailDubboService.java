@@ -5,6 +5,7 @@ import com.jasonless.oauth2.admin.service.OauthClientDetailService;
 import com.jasonless.oauth2.api.entity.dto.OauthClientDetailDTO;
 import com.jasonless.oauth2.api.service.IOauthClientDetailService;
 import com.jasonless.oauth2.common.core.entity.vo.Result;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author LiuShiZeng
  */
 @Service
+@Slf4j
 public class OauthClientDetailDubboService implements IOauthClientDetailService {
 
     @Autowired
@@ -19,10 +21,17 @@ public class OauthClientDetailDubboService implements IOauthClientDetailService 
 
     @Override
     public Result<OauthClientDetailDTO> get(String clientId) {
+        log.info("oauthClientDetailService with {}","start");
+        try{
+            OauthClientDetail oauthClientDetail = oauthClientDetailService.getById(clientId);
+            return Result.success(oauthClientDetail);
+        }catch (Exception e){
+            log.error("oauthClientDetailService with clientId:{},exception:{}",clientId,e.getMessage());
+            return Result.fail();
+        }finally {
+            log.info("oauthClientDetailService with {}","end");
+        }
 
-        OauthClientDetail oauthClientDetail = oauthClientDetailService.getById(clientId);
 
-
-        return null;
     }
 }
