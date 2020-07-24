@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>奥凯航空</title>
+    <link rel="stylesheet" th:href="@{sso/css/index.css}"/>
+</head>
+<body>
+<div class="header">
+    <div class="header-content">
+        <img th:src="@{sso/images/logo.png}" alt="OKAIR-LOGO"/>
+    </div>
+</div>
+<div class="section">
+    <div class="section-content">
+        <div class="content-left">
+            <img th:src="@{sso/images/rightPic.png}" alt="right_pic"/>
+        </div>
+        <div class="content-right">
+            <div class="login" id="login">
+                <ul class="login-title" id="loginTitle">
+                    <li class="li-active" id="vfcLi">扫码登录</li>
+                    <li id="useridLi">账号登录</li>
+                </ul>
+                <!--TODO 账号登录-->
+                <div class="userid-login" id="useridLogin">
+                    <form action="authorizationlogin" method="post" id="loginform">
+                        <input type="text" id="username" name="username" class="userId" placeholder="请输入工号" maxlength="6"/>
+                        <input type="password" id="password" name="password" class="password" placeholder="请输入密码" maxlength="14"/>
+                        <input type="button" class="login-btn" id="loginBtn" value="登录" />
+                    </form>
+                </div>
+                <!--TODO 扫码登录-->
+                <div class="vfc-login" id="login_container">
+                    <input  id="ssoAppId" th:value="${ssoAppId}" style="display:none"/>
+                    <input  id="ssoCallBack" th:value="${ssoCallBack}" style="display:none"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer"></div>
+<script th:src="@{sso/js/jquery-1.11.3.js}"></script>
+<script src="https://g.alicdn.com/dingding/dinglogin/0.0.2/ddLogin.js"></script>
+<script th:src="@{sso/js/index.js}"></script>
+<script type="text/javascript">
+
+
+		$(function() {
+			 var errmsg = $("#errmsg").val();
+			if(errmsg!=null && errmsg!=""){
+				alert(errmsg);
+			}
+			$("#loginBtn").click(function(){
+	            var username=$("#username").val();
+	            var password=$("#password").val();
+	            var errmsg = $("#errmsg").val();
+	            if (username== ""||password== "") {
+	                alert('登录信息不能为空!');
+	                return;
+	            }
+	            var json = JSON.stringify({username:username,password:password});
+	            var protocol = window.location.protocol;
+	            var host = window.location.host;
+	            var target = "/authorizationlogin"+window.location.search
+	            var url = window.location.search;
+	            var form = $("#loginform");
+
+	            form.attr("action",form.attr("action")+url);
+	            form.submit();
+	        });
+
+		})
+
+		var ssoAppId = $("#ssoAppId").val();
+		var ssoCallBack = $("#ssoCallBack").val();
+		var obj = DDLogin({
+		    id:"login_container",
+		    goto: "https%3a%2f%2foapi.dingtalk.com%2fconnect%2foauth2%2fsns_authorize%3fappid%3d"+ssoAppId+"%26response_type%3dcode%26scope%3dsnsapi_login%26state%3dSTATE%26redirect_uri%3d"+ssoCallBack,
+		    style: "",
+		    href: "",
+		    width : "204px",
+		    height: "258px"
+		});
+		//goto: "https%3a%2f%2foapi.dingtalk.com%2fconnect%2foauth2%2fsns_authorize%3fappid%3ddingoadem1zawtbnm3vggz%26response_type%3dcode%26scope%3dsnsapi_login%26state%3dSTATE%26redirect_uri%3dhttp%253a%252f%252fweixinok.okair.net%252fcxm%252fsso%252fLogin!qrcodeCall.action",
+
+
+		$(".login_content").css("width","204px").css("height","528px");
+		var hanndleMessage = function (event) {
+		    var loginTmpCode = event.data; //拿到loginTmpCode后就可以在这里构造跳转链接进行跳转了
+		    location.href="https://oapi.dingtalk.com/connect/oauth2/sns_authorize?appid="+ssoAppId+"&response_type=code&scope=snsapi_login&state=STATE&redirect_uri=https%3a%2f%2foapi.dingtalk.com%2fconnect%2foauth2%2fsns_authorize%3fappid%3d"+ssoAppId+"%26response_type%3dcode%26scope%3dsnsapi_login%26state%3dSTATE%26redirect_uri%3d"+ssoCallBack+"&loginTmpCode="+loginTmpCode;
+		    //var origin = event.origin;
+		};
+		if (typeof window.addEventListener != 'undefined') {
+		    window.addEventListener('message', hanndleMessage, false);
+		} else if (typeof window.attachEvent != 'undefined') {
+		    window.attachEvent('onmessage', hanndleMessage);
+		}
+
+		$(".login_content").css("width","204px").css("height","528px");
+
+	</script>
+</body>
+</html>

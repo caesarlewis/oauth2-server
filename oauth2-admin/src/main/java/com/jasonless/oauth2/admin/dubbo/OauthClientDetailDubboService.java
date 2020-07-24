@@ -1,6 +1,7 @@
 package com.jasonless.oauth2.admin.dubbo;
 
 import com.jasonless.oauth2.admin.entity.po.OauthClientDetail;
+import com.jasonless.oauth2.admin.mapstruct.OauthClientDetailMapStruct;
 import com.jasonless.oauth2.admin.service.OauthClientDetailService;
 import com.jasonless.oauth2.api.entity.dto.OauthClientDetailDTO;
 import com.jasonless.oauth2.api.service.IOauthClientDetailService;
@@ -24,7 +25,8 @@ public class OauthClientDetailDubboService implements IOauthClientDetailService 
         log.info("oauthClientDetailService with {}","start");
         try{
             OauthClientDetail oauthClientDetail = oauthClientDetailService.getById(clientId);
-            return Result.success(oauthClientDetail);
+            OauthClientDetailDTO detailDTO = OauthClientDetailMapStruct.INSTANCE.po2dto(oauthClientDetail);
+            return Result.success(detailDTO);
         }catch (Exception e){
             log.error("oauthClientDetailService with clientId:{},exception:{}",clientId,e.getMessage());
             return Result.fail();

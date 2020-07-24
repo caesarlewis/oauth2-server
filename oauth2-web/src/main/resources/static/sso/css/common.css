@@ -1,0 +1,35 @@
+*{
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+    -webkit-backface-visibility:hidden;
+}
+body{
+    font-size: 12px;
+}
+ul,ol{
+    list-style: none;
+}
+a{
+    text-decoration: none;
+    color: #333;
+}
+a:hover{
+	text-decoration: none;
+    color: #333;
+}
+p,ul,ol,dd,dt,dl,h1,h2,h3,h4,h5,h6,li,div{
+    margin: 0;
+    padding: 0;
+}
+i,b{
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+  font-family: Yuppy_SC;
+  src: url('../assets/font/yu.ttf');
+}
+@font-face {
+  font-family: sam_song;
+  src: url('../assets/font/hyxinrenwensongw.ttf');
+}

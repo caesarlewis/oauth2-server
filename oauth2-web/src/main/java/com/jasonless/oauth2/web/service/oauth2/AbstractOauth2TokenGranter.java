@@ -69,8 +69,9 @@ public abstract class AbstractOauth2TokenGranter implements Oauth2TokenGenerator
             if(!tokenRequest.getOauthClientDetailDTO().getClientId().equals(clientId)){
                 throw new Oauth2Exception(Oauth2ErrorType.PARAMETER_ERROR,"传入clientId不同");
             }
+        }else{
+            throw new Oauth2Exception(Oauth2ErrorType.MISSING_PARAMETER,"缺少client_id");
         }
-
 
     }
 

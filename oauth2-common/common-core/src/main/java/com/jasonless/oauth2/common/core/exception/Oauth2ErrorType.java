@@ -10,7 +10,8 @@ public enum Oauth2ErrorType implements IErrorType{
 
     MISSING_PARAMETER("400001","缺少参数"),
     PARAMETER_ERROR("400002","参数不正确"),
-    CLIENT_SECRET_ERROR("400003","缺少client_secret"),;
+    CLIENT_SECRET_ERROR("400003","缺少client_secret"),
+    GRANT_TYPE_ERROR("400004","grant_type不正确");
 
     /**
      * 错误类型码
