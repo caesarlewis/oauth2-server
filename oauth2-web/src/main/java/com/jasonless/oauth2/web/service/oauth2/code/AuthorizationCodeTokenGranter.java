@@ -3,12 +3,15 @@ package com.jasonless.oauth2.web.service.oauth2.code;
 import com.jasonless.oauth2.api.entity.domain.Oauth2GrantType;
 import com.jasonless.oauth2.api.entity.dto.OauthCodeDTO;
 import com.jasonless.oauth2.common.core.exception.Oauth2ErrorType;
+import com.jasonless.oauth2.common.web.util.JwtTokenUtil;
 import com.jasonless.oauth2.web.entity.dto.TokenRequest;
 import com.jasonless.oauth2.web.entity.vo.OAuth2AccessToken;
 import com.jasonless.oauth2.web.exception.Oauth2Exception;
 import com.jasonless.oauth2.web.provider.OauthCodeProvider;
 import com.jasonless.oauth2.web.service.oauth2.AbstractOauth2TokenGranter;
 import com.jasonless.oauth2.web.util.OAuth2Util;
+import javassist.bytecode.BootstrapMethodsAttribute;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -34,13 +37,33 @@ public class AuthorizationCodeTokenGranter extends AbstractOauth2TokenGranter {
         if(oauthCode==null){
             throw new Oauth2Exception(Oauth2ErrorType.PARAMETER_ERROR,"code不存在");
         }
-        oauthCodeService.removeById(code);
+        Boolean falg = oauthCodeProvider.remove(code);
+        if(!falg){
+                //TODO 抛出DUBBO接口异常
+            throw new Oauth2Exception(Oauth2ErrorType.PARAMETER_ERROR,"code不存在");
+        }
 
-        Map<String,String> res = new HashMap<String,String>();
-        String token = JwtUtil.getLocalToken(SystemContext.IIS, new Date(new Date().getTime() + SystemContext.SESSION_TIME), SystemContext.SUB, oauthCode.getUserId(),
-                new Date(), null);
-        res.put("token", token);
-        return res;
+        Map<String,Object> accessMap = new HashMap<>();
+        accessMap.put(OAuth2Util.CLIENT_ID,tokenRequest.getOauthClientDetailDTO().getClientId());
+
+        //   Long expiresIn = DateTime.now().plusDays(1).toDate().getTime()/1000;
+        Long expiresIn = DateTime.now().plusHours(tokenRequest.getOauthClientDetailDTO().getAccessTokenValidity()).toDate().getTime()/1000;
+        accessMap.put("exp", expiresIn);
+        accessMap.put(OAuth2Util.USERNAME,oauthCode.getUserId());
+        String accessToken = JwtTokenUtil.generatorToken(accessMap);
+
+        Map<String,Object> reAccessMap = new HashMap<>();
+        reAccessMap.put(OAuth2Util.CLIENT_ID,tokenRequest.getOauthClientDetailDTO().getClientId());
+        reAccessMap.put(OAuth2Util.USERNAME,oauthCode.getUserId());
+        String refreshToken = JwtTokenUtil.generatorToken(reAccessMap);
+
+
+        OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken();
+        oAuth2AccessToken.setAccess_token(accessToken);
+        oAuth2AccessToken.setExpires_in(expiresIn);
+        oAuth2AccessToken.setRefresh_token(refreshToken);
+
+        return oAuth2AccessToken;
 
     }
 

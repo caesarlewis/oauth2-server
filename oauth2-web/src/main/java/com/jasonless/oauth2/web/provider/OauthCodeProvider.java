@@ -26,4 +26,12 @@ public class OauthCodeProvider {
         return null;
     }
 
+    public Boolean remove(String code){
+        Result<Boolean> result = oauthCodeService.remove(code);
+        if(result.isSuccess()){
+            return result.getData();
+        }
+        return false;
+    }
+
 }
